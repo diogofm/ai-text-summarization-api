@@ -70,13 +70,5 @@ def test_input_regular_text():
         json={"text": regular_text},
     )
 
-    print(
-        client.post(
-            "/summarize/",
-            headers={API_KEY_NAME: API_KEY},
-            json={"text": regular_text},
-        )
-    )
-
     assert response.status_code == 200
     assert isinstance(response.json()["summary"], str)
