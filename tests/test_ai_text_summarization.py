@@ -1,9 +1,8 @@
-import json
-
 from fastapi.testclient import TestClient
+from starlette.status import HTTP_200_OK, HTTP_422_UNPROCESSABLE_ENTITY
 
-from .main import app
-from .routers.ai_text_summarization import MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE
+from app.main import app
+from app.routers.ai_text_summarization import MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE
 
 from decouple import config
 
@@ -26,8 +25,8 @@ def test_input_not_string():
     response = client.post(
         "/summarize/", headers={API_KEY_NAME: API_KEY}, json={"text": 1}
     )
-    # Check for validation error
-    assert response.status_code == 422
+
+    assert response.status_code == HTTP_422_UNPROCESSABLE_ENTITY
 
 
 def test_input_string():
@@ -37,7 +36,7 @@ def test_input_string():
         json={"text": "I'm a string, please test me."},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == HTTP_200_OK
 
 
 def test_input_small_text():
@@ -48,7 +47,7 @@ def test_input_small_text():
     )
 
     assert len(small_test_text.split(" ")) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE
-    assert response.status_code == 200
+    assert response.status_code == HTTP_200_OK
     assert response.json() == {"summary": "Text not long enough. Nothing to summarize."}
 
 
@@ -59,7 +58,7 @@ def test_input_empty_string():
         json={"text": empty_string},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == HTTP_200_OK
     assert response.json() == {"summary": "Text is empty. Nothing to summarize."}
 
 
@@ -70,5 +69,5 @@ def test_input_regular_text():
         json={"text": regular_text},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == HTTP_200_OK
     assert isinstance(response.json()["summary"], str)
