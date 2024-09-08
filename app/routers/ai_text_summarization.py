@@ -5,6 +5,8 @@ from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.output_parsers import StrOutputParser
 
+MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE = 10
+
 
 class Text(BaseModel):
     text: str
@@ -22,6 +24,13 @@ parser = StrOutputParser()
 
 @router.post("/summarize/", response_model=Summary, tags=["ai"])
 async def summarize(text: Text):
+    # Check if text is empty to avoid calling the LLM API.
+    if text.text == "" or text.text.isspace():
+        return {"summary": "Text is empty. Nothing to summarize."}
+
+    if len(text.text.strip()) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE:
+        return {"summary": "Text not long enough. Nothing to summarize."}
+
     messages = [
         SystemMessage(
             content="You are a text summarizer specialist. Answer only with the summary of the text provided by the user."
