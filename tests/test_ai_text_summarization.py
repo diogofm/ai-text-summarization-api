@@ -46,7 +46,7 @@ def test_input_small_text():
         json={"text": small_test_text},
     )
 
-    assert len(small_test_text.split(" ")) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE
+    assert len(small_test_text.split()) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE
     assert response.status_code == HTTP_200_OK
     assert response.json() == {"summary": "Text not long enough. Nothing to summarize."}
 

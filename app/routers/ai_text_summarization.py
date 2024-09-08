@@ -1,3 +1,5 @@
+from typing import Dict
+
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -23,12 +25,12 @@ parser = StrOutputParser()
 
 
 @router.post("/summarize/", response_model=Summary, tags=["ai"])
-async def summarize(text: Text):
+async def summarize(text: Text) -> Dict[str, str]:
     # Check if text is empty to avoid calling the LLM API.
-    if text.text == "" or text.text.isspace():
+    if not text.text.strip():
         return {"summary": "Text is empty. Nothing to summarize."}
 
-    if len(text.text.split(" ")) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE:
+    if len(text.text.split()) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE:
         return {"summary": "Text not long enough. Nothing to summarize."}
 
     messages = [
