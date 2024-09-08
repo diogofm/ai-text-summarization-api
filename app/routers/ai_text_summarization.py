@@ -22,7 +22,6 @@ parser = StrOutputParser()
 
 @router.post("/summarize/", response_model=Summary, tags=["ai"])
 async def summarize(text: Text):
-    print(text.text)
     messages = [
         SystemMessage(
             content="You are a text summarizer specialist. Answer only with the summary of the text provided by the user."
