@@ -28,7 +28,7 @@ async def summarize(text: Text):
     if text.text == "" or text.text.isspace():
         return {"summary": "Text is empty. Nothing to summarize."}
 
-    if len(text.text.strip()) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE:
+    if len(text.text.split(" ")) <= MIN_NUMBER_OF_WORDS_WORTH_TO_SUMMARIZE:
         return {"summary": "Text not long enough. Nothing to summarize."}
 
     messages = [
